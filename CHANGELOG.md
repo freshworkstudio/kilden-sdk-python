@@ -28,6 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Vector runners for kilden-sdk-spec (payload, identity, flag hashing) wired
   into CI against the spec's mock capture server.
 
-[Unreleased]: https://github.com/freshworkstudio/kilden-sdk-python/compare/v0.1.0-alpha.1...HEAD
-[0.1.0a2]: https://github.com/freshworkstudio/kilden-sdk-python/compare/v0.1.0-alpha.1...v0.1.0-alpha.2
-[0.1.0a1]: https://github.com/freshworkstudio/kilden-sdk-python/releases/tag/v0.1.0-alpha.1
+[Unreleased]: https://github.com/kildenhq/kilden-sdk-python/compare/v0.1.0-alpha.1...HEAD
+[0.1.0a2]: https://github.com/kildenhq/kilden-sdk-python/compare/v0.1.0-alpha.1...v0.1.0-alpha.2
+[0.1.0a1]: https://github.com/kildenhq/kilden-sdk-python/releases/tag/v0.1.0-alpha.1

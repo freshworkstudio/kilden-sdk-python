@@ -1,7 +1,7 @@
 """Kilden server-side SDK.
 
 Implements the Kilden Server SDK Specification
-(https://github.com/freshworkstudio/kilden-sdk-spec): batched event capture,
+(https://github.com/kildenhq/kilden-sdk-spec): batched event capture,
 identity-token signing and remotely evaluated feature flags, with zero
 runtime dependencies.
 """

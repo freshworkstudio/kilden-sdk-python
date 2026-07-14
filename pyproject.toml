@@ -25,8 +25,8 @@ dependencies = []
 [project.urls]
 Homepage = "https://kilden.io"
 Documentation = "https://docs.kilden.io"
-Repository = "https://github.com/freshworkstudio/kilden-sdk-python"
-Changelog = "https://github.com/freshworkstudio/kilden-sdk-python/blob/main/CHANGELOG.md"
+Repository = "https://github.com/kildenhq/kilden-sdk-python"
+Changelog = "https://github.com/kildenhq/kilden-sdk-python/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = [

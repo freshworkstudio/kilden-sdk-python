@@ -5,8 +5,8 @@
 # kilden
 
 [![PyPI](https://img.shields.io/pypi/v/kilden)](https://pypi.org/project/kilden/)
-[![ci](https://github.com/freshworkstudio/kilden-sdk-python/actions/workflows/ci.yml/badge.svg)](https://github.com/freshworkstudio/kilden-sdk-python/actions/workflows/ci.yml)
-[![license](https://img.shields.io/github/license/freshworkstudio/kilden-sdk-python)](LICENSE)
+[![ci](https://github.com/kildenhq/kilden-sdk-python/actions/workflows/ci.yml/badge.svg)](https://github.com/kildenhq/kilden-sdk-python/actions/workflows/ci.yml)
+[![license](https://img.shields.io/github/license/kildenhq/kilden-sdk-python)](LICENSE)
 
 The Python server-side SDK for [Kilden](https://kilden.io), a customer data
 platform: analytics, campaigns and session replay on one event pipeline.
@@ -132,15 +132,15 @@ take down a request. The constructor is the one place that fails fast.
 ## Spec
 
 This SDK implements the
-[Kilden Server SDK Specification](https://github.com/freshworkstudio/kilden-sdk-spec)
+[Kilden Server SDK Specification](https://github.com/kildenhq/kilden-sdk-spec)
 (spec 0.1) and runs its frozen test vectors in CI, byte-for-byte for
 identity tokens. Behavior changes land in the spec first; divergence from
-it is a bug worth [reporting](https://github.com/freshworkstudio/kilden-sdk-python/issues).
+it is a bug worth [reporting](https://github.com/kildenhq/kilden-sdk-python/issues).
 
 ## Community
 
 Questions and design conversations:
-[Discussions](https://github.com/freshworkstudio/kilden-sdk-python/discussions).
+[Discussions](https://github.com/kildenhq/kilden-sdk-python/discussions).
 Product docs: [docs.kilden.io](https://docs.kilden.io).
 
 ## License

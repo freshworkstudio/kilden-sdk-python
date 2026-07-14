@@ -1,7 +1,7 @@
 # Contributing
 
 Behavior in this SDK is governed by
-[kilden-sdk-spec](https://github.com/freshworkstudio/kilden-sdk-spec) — the
+[kilden-sdk-spec](https://github.com/kildenhq/kilden-sdk-spec) — the
 spec, its test vectors and its mock capture server are the authority. A PR
 that changes behavior without a matching spec change will be rejected; open
 the conversation on the spec repo first. Bug fixes, typing improvements and
@@ -24,5 +24,5 @@ kilden-sdk-spec next to this repo (or `KILDEN_SPEC_DIR`):
 
 ## Questions
 
-Use [Discussions](https://github.com/freshworkstudio/kilden-sdk-python/discussions);
+Use [Discussions](https://github.com/kildenhq/kilden-sdk-python/discussions);
 answers there stay searchable.
