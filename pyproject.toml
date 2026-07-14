@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kilden"
+version = "0.1.0a1"
+description = "Kilden server-side SDK: events, identity signing and feature flags. Zero dependencies, fork-safe."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Freshwork" }]
+requires-python = ">=3.9"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Software Development :: Libraries",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://kilden.io"
+Documentation = "https://docs.kilden.io"
+Repository = "https://github.com/freshworkstudio/kilden-sdk-python"
+Changelog = "https://github.com/freshworkstudio/kilden-sdk-python/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "ruff>=0.6",
+  "mypy>=1.11",
+  "gunicorn>=22",
+  "build",
+  "twine",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kilden"]
+
+[tool.pytest.ini_options]
+markers = [
+  "integration: needs the kilden-sdk-spec mock server (and Go) available",
+]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+strict = true
+files = ["src/kilden"]
+python_version = "3.9"
