@@ -24,7 +24,7 @@ dependencies = []
 
 [project.urls]
 Homepage = "https://kilden.io"
-Documentation = "https://docs.kilden.io"
+Documentation = "https://kilden.io/docs"
 Repository = "https://github.com/kildenhq/kilden-sdk-python"
 Changelog = "https://github.com/kildenhq/kilden-sdk-python/blob/main/CHANGELOG.md"
 
