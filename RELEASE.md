@@ -1,33 +1,24 @@
 # Releasing
 
-Releases are cut from tags; `release.yml` builds and uploads to PyPI using
-the `PYPI_TOKEN` repository secret.
+Releases are cut from `v*` tags; `release.yml` builds, publishes to PyPI via
+**OIDC trusted publishing** (no token secret), and creates the GitHub
+release with the artifacts attached.
 
-## One-time setup (pending)
+## One-time setup
 
-`PYPI_TOKEN` is **not configured yet** — the `kilden` name on PyPI is
-unclaimed. First release must be done by a human:
+Register the trusted publisher on PyPI (works before the first upload, as a
+*pending* publisher): <https://pypi.org/manage/account/publishing/> →
 
-```sh
-python -m venv .venv && .venv/bin/pip install build twine
-.venv/bin/python -m build
-.venv/bin/twine check dist/*
-# with a PyPI API token for an account that will own the `kilden` name:
-TWINE_USERNAME=__token__ TWINE_PASSWORD=pypi-… .venv/bin/twine upload dist/*
-```
-
-Then store the token as the `PYPI_TOKEN` actions secret so tags publish
-automatically:
-
-```sh
-gh secret set PYPI_TOKEN --repo freshworkstudio/kilden-sdk-python
-```
+- PyPI project name: `kilden`
+- Owner: `freshworkstudio` · Repository: `kilden-sdk-python`
+- Workflow name: `release.yml` · Environment: (leave empty)
 
 ## Cutting a release
 
-1. Update `src/kilden/version.py` and `pyproject.toml` (`version`), update
-   `CHANGELOG.md`.
-2. `git tag v0.x.y && git push origin v0.x.y`.
+1. Bump `version` in `pyproject.toml` and `src/kilden/version.py`
+   (PEP 440: git tag `v0.1.0-alpha.3` ↔ version `0.1.0a3`).
+2. Update `CHANGELOG.md`.
+3. `git tag v0.1.0-alpha.3 && git push origin v0.1.0-alpha.3`.
 
-Note PEP 440: the git tag `v0.1.0-alpha.1` corresponds to the Python
-version `0.1.0a1`.
+The workflow does the rest. Manual fallback (needs a PyPI API token):
+`python -m build && twine check dist/* && twine upload dist/*`.
