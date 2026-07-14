@@ -1,0 +1,24 @@
+name: Bug report
+description: The SDK misbehaves or diverges from kilden-sdk-spec
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: SDK and Python versions
+      placeholder: kilden 0.1.0a1, Python 3.12, gunicorn 22
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Minimal snippet if possible. Divergences from kilden-sdk-spec are the most valuable reports.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true

@@ -1,0 +1,11 @@
+name: Feature request
+description: Propose a change to the SDK
+labels: [enhancement]
+body:
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Behavior changes belong in kilden-sdk-spec first — link a spec issue/PR if this is one.
+    validations:
+      required: true
