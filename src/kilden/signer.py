@@ -8,7 +8,8 @@ import hashlib
 import hmac
 import json
 import time
-from typing import Any, Mapping, Optional
+from collections.abc import Mapping
+from typing import Any, Optional
 
 _MAX_TTL = 604_800  # 7 days; identity tokens are short-lived by design
 
@@ -54,11 +55,12 @@ class IdentitySigner:
             raise ValueError(f"ttl must be in (0, {_MAX_TTL}] seconds")
 
         iat = int(time.time()) if _iat is None else _iat
-        payload: "dict[str, Any]" = {"sub": sub, "iat": iat, "exp": iat + ttl}
+        payload: dict[str, Any] = {"sub": sub, "iat": iat, "exp": iat + ttl}
         if traits:
             payload["traits"] = dict(traits)
 
-        header_b64 = _b64url(_canonical_json({"alg": "HS256", "kid": self._kid, "typ": "JWT"}).encode("utf-8"))
+        header = {"alg": "HS256", "kid": self._kid, "typ": "JWT"}
+        header_b64 = _b64url(_canonical_json(header).encode("utf-8"))
         payload_b64 = _b64url(_canonical_json(payload).encode("utf-8"))
         signing_input = f"{header_b64}.{payload_b64}".encode("ascii")
         signature = hmac.new(self._secret, signing_input, hashlib.sha256).digest()

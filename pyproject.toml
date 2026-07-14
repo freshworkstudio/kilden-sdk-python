@@ -57,4 +57,4 @@ select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
 [tool.mypy]
 strict = true
 files = ["src/kilden"]
-python_version = "3.9"
+python_version = "3.10"

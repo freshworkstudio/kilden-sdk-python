@@ -37,7 +37,7 @@ def test_token_shape_and_determinism():
     a = signer.sign("user_1", _iat=1_730_000_000)
     b = signer.sign("user_1", _iat=1_730_000_000)
     assert a == b
-    header, payload, sig = a.split(".")
+    assert a.count(".") == 2
     assert "=" not in a  # base64url without padding
 
 

@@ -9,9 +9,8 @@ import urllib.request
 
 import pytest
 
-SPEC_DIR = pathlib.Path(
-    os.environ.get("KILDEN_SPEC_DIR", pathlib.Path(__file__).resolve().parents[2] / "kilden-sdk-spec")
-)
+_DEFAULT_SPEC = pathlib.Path(__file__).resolve().parents[2] / "kilden-sdk-spec"
+SPEC_DIR = pathlib.Path(os.environ.get("KILDEN_SPEC_DIR", _DEFAULT_SPEC))
 
 
 @pytest.fixture(scope="session")

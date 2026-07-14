@@ -5,14 +5,14 @@ Transports never raise — errors come back in the response object."""
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
-from typing import Dict, Optional
+from typing import Optional
 
 
 @dataclass
 class TransportResponse:
     status: int  # 0 = transport-level failure (timeout, DNS, refused…)
     body: bytes = b""
-    headers: Dict[str, str] = field(default_factory=dict)
+    headers: dict[str, str] = field(default_factory=dict)
     error: Optional[str] = None
 
 
@@ -22,7 +22,7 @@ class Transport:
     def __init__(self, timeout: float) -> None:
         self.timeout = timeout
 
-    def send(self, url: str, body: bytes, headers: Dict[str, str]) -> TransportResponse:
+    def send(self, url: str, body: bytes, headers: dict[str, str]) -> TransportResponse:
         req = urllib.request.Request(url, data=body, headers=headers, method="POST")
         try:
             with urllib.request.urlopen(req, timeout=self.timeout) as resp:

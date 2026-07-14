@@ -40,7 +40,9 @@ class FakeTransport:
 def client(transport=None, **kw):
     kw.setdefault("flush_at", 1000)
     kw.setdefault("flush_interval", 60)
-    c = Client("sk_test_secret", host="http://mock.invalid", transport=transport or FakeTransport(), **kw)
+    c = Client(
+        "sk_test_secret", host="http://mock.invalid", transport=transport or FakeTransport(), **kw
+    )
     c._jitter = lambda: 1.0
     c._sleep = lambda s: None
     return c
@@ -53,9 +55,8 @@ def events_sent(t: FakeTransport):
 def test_constructor_rejects_bad_keys():
     with pytest.raises(ValueError):
         Client("")
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="secret"):
         Client("wk_public_key_123")
-    assert "secret" in str(pytest.raises(ValueError, Client, "wk_x").value)
 
 
 def test_track_and_flush_delivers():
@@ -109,7 +110,9 @@ def test_identify_and_alias_wire_shapes():
 def test_explicit_uuid_and_timestamp():
     t = FakeTransport()
     c = client(t)
-    c.track("u", "e", uuid="0197fa10-7a2b-7c3d-8e4f-5a6b7c8d9e0f", timestamp="2026-01-02T03:04:05.678Z")
+    c.track(
+        "u", "e", uuid="0197fa10-7a2b-7c3d-8e4f-5a6b7c8d9e0f", timestamp="2026-01-02T03:04:05.678Z"
+    )
     c.flush()
     e = events_sent(t)[0]
     assert e["uuid"] == "0197fa10-7a2b-7c3d-8e4f-5a6b7c8d9e0f"
@@ -131,7 +134,7 @@ def test_queue_cap_drops_new_event():
 def test_batches_chunk_at_1000():
     t = FakeTransport()
     c = client(t, max_queue_size=3000)
-    for i in range(1500):
+    for _ in range(1500):
         c.track("u", "e")
     c.flush()
     sizes = [len(b["batch"]) for b in t.bodies()]

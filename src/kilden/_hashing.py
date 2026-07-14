@@ -3,7 +3,7 @@ evaluates flags remotely. It lives here, tested against the spec vectors,
 so local evaluation can arrive later without a divergence risk."""
 
 import hashlib
-from typing import List, Tuple, Union
+from typing import Union
 
 
 def _fraction(data: str) -> float:
@@ -16,7 +16,7 @@ def bucket(flag_key: str, distinct_id: str) -> float:
 
 
 def variant_for(
-    flag_key: str, distinct_id: str, variants: List[Tuple[str, int]]
+    flag_key: str, distinct_id: str, variants: "list[tuple[str, int]]"
 ) -> Union[str, bool]:
     point = _fraction(f"{flag_key}:{distinct_id}:variant") * 100
     cumulative = 0.0

@@ -11,8 +11,9 @@ import random
 import threading
 import time
 from collections import OrderedDict, deque
+from collections.abc import Mapping
 from datetime import datetime
-from typing import Any, Callable, Deque, Dict, List, Mapping, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Union
 
 from ._timefmt import coerce_timestamp, now_wire
 from ._uuid7 import uuid7
@@ -32,7 +33,7 @@ FLAG_CACHE_TTL = 30.0
 FLAG_CACHE_SIZE = 1000
 
 FlagValue = Union[bool, str]
-Event = Dict[str, Any]
+Event = dict[str, Any]
 
 
 class Client:
@@ -74,7 +75,7 @@ class Client:
 
         self._lock = threading.Lock()
         self._wake = threading.Condition(self._lock)
-        self._queue: Deque[Event] = deque()
+        self._queue: deque[Event] = deque()
         self._dropped = 0
         self._closed = False
         self._sending = False
@@ -84,7 +85,7 @@ class Client:
         self._sleep: Callable[[float], None] = time.sleep
         self._jitter: Callable[[], float] = lambda: random.uniform(0.5, 1.5)
 
-        self._flag_cache: "OrderedDict[str, Tuple[float, Dict[str, FlagValue]]]" = OrderedDict()
+        self._flag_cache: OrderedDict[str, tuple[float, dict[str, FlagValue]]] = OrderedDict()
 
         self._worker: Optional[threading.Thread] = None
         if self._enabled:
@@ -184,7 +185,9 @@ class Client:
                     self._dropped += remaining
                     self._queue.clear()
                     logger.warning(
-                        "close: %d events dropped after the %.0fs deadline", remaining, CLOSE_DEADLINE
+                        "close: %d events dropped after the %.0fs deadline",
+                        remaining,
+                        CLOSE_DEADLINE,
                     )
                 self._closed = True
                 self._wake.notify_all()
@@ -337,7 +340,7 @@ class Client:
                     return
                 if os.getpid() != self._pid:
                     return  # a fork orphaned this thread's state; child restarts
-                batch: List[Event] = []
+                batch: list[Event] = []
                 while self._queue and len(batch) < MAX_EVENTS_PER_REQUEST:
                     batch.append(self._queue.popleft())
                 if batch:
@@ -352,7 +355,7 @@ class Client:
 
     # -- delivery ----------------------------------------------------------
 
-    def _send_with_retry(self, batch: List[Event]) -> None:
+    def _send_with_retry(self, batch: list[Event]) -> None:
         body = json.dumps(
             {"write_key": self._write_key, "sent_at": now_wire(), "batch": batch},
             ensure_ascii=False,
@@ -400,14 +403,14 @@ class Client:
 
     def _decide(
         self, distinct_id: str, person_properties: Optional[Mapping[str, Any]]
-    ) -> Optional[Dict[str, FlagValue]]:
+    ) -> Optional[dict[str, FlagValue]]:
         bypass_cache = bool(person_properties)
         if not bypass_cache:
             cached = self._flag_cache_get(distinct_id)
             if cached is not None:
                 return cached
 
-        payload: Dict[str, Any] = {"write_key": self._write_key, "distinct_id": distinct_id}
+        payload: dict[str, Any] = {"write_key": self._write_key, "distinct_id": distinct_id}
         if person_properties:
             payload["person_properties"] = dict(person_properties)
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
@@ -428,14 +431,14 @@ class Client:
             logger.warning("decide returned a malformed body; returning default")
             return None
 
-        result: Dict[str, FlagValue] = {
+        result: dict[str, FlagValue] = {
             k: v for k, v in flags.items() if isinstance(v, (bool, str))
         }
         if not bypass_cache:
             self._flag_cache_put(distinct_id, result)
         return result
 
-    def _flag_cache_get(self, distinct_id: str) -> Optional[Dict[str, FlagValue]]:
+    def _flag_cache_get(self, distinct_id: str) -> Optional[dict[str, FlagValue]]:
         with self._lock:
             entry = self._flag_cache.get(distinct_id)
             if entry is None:
@@ -447,7 +450,7 @@ class Client:
             self._flag_cache.move_to_end(distinct_id)
             return flags
 
-    def _flag_cache_put(self, distinct_id: str, flags: Dict[str, FlagValue]) -> None:
+    def _flag_cache_put(self, distinct_id: str, flags: dict[str, FlagValue]) -> None:
         with self._lock:
             self._flag_cache[distinct_id] = (time.monotonic() + FLAG_CACHE_TTL, flags)
             self._flag_cache.move_to_end(distinct_id)
