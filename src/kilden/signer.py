@@ -16,9 +16,16 @@ _MAX_TTL = 604_800  # 7 days; identity tokens are short-lived by design
 
 def _canonical_json(value: Any) -> str:
     # Keys sorted at every level, compact separators, UTF-8 preserved, and
-    # &, <, > escaped the way Go's encoding/json does (SPEC §6.1).
+    # &, <, > plus the JS line separators U+2028/U+2029 escaped the way Go's
+    # encoding/json does (SPEC §6.1).
     out = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-    return out.replace("&", "\\u0026").replace("<", "\\u003c").replace(">", "\\u003e")
+    return (
+        out.replace("&", "\\u0026")
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("\u2028", "\\u2028")
+        .replace("\u2029", "\\u2029")
+    )
 
 
 def _b64url(raw: bytes) -> str:
