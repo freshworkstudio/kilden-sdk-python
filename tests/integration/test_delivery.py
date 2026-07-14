@@ -47,12 +47,16 @@ def test_401_drops_without_retry(mock):
     c.close()
 
 
-def test_corrupt_response_retries_then_delivers(mock):
+def test_corrupt_body_on_2xx_is_success(mock):
+    # SPEC §4.3: any 2xx is success and the body is never parsed. The armed
+    # failure answers 200 with garbage without recording, so nothing is
+    # captured and nothing is re-sent.
     mock.control("/__mock/fail", {"times": 1, "mode": "corrupt"})
     c = make_client(mock)
-    c.track("u", "survives_corruption")
+    c.track("u", "fire_and_forget")
     c.flush()
-    assert len(mock.captured()["events"]) == 1
+    assert mock.captured()["events"] == []
+    assert c.dropped_count == 0
     c.close()
 
 

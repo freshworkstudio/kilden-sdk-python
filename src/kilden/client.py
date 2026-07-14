@@ -459,13 +459,13 @@ class Client:
 
 
 def _classify(resp: TransportResponse) -> str:
-    """SPEC §4.3: ok | fatal (drop) | retry."""
-    if resp.status == 200:
-        try:
-            json.loads(resp.body)
-            return "ok"
-        except ValueError:
-            return "retry"  # corrupt response
+    """SPEC §4.3: ok | fatal (drop) | retry.
+
+    Any 2xx is success — the response body is never parsed; the status is
+    the whole signal.
+    """
+    if 200 <= resp.status < 300:
+        return "ok"
     if resp.status == 429 or resp.status >= 500 or resp.status == 0:
         return "retry"
     return "fatal"  # remaining 4xx: retrying cannot fix it

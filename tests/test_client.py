@@ -203,12 +203,14 @@ def test_retries_exhausted_drops_and_counts():
     c.close()
 
 
-def test_corrupt_200_body_retries():
+def test_corrupt_200_body_is_success():
+    # SPEC §4.3: any 2xx is success — the body is never parsed, so a garbage
+    # body must not trigger a retry.
     t = FakeTransport(TransportResponse(status=200, body=b"{garbage"))
     c = client(t)
     c.track("u", "e")
     c.flush()
-    assert len(t.requests) == 2
+    assert len(t.requests) == 1
     assert c.dropped_count == 0
     c.close()
 
