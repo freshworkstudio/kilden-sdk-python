@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0a3] - 2026-07-14
+
+### Changed
+
+- Repository moved to the kildenhq org; releases publish to PyPI via OIDC
+  trusted publishing.
+
 ## [0.1.0a2] - 2026-07-14
 
 ### Fixed
