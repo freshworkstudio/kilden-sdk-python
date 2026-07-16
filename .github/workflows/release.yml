@@ -26,21 +26,31 @@ jobs:
         # literal comparison would reject every valid prerelease.
         run: |
           python - <<'EOF'
-          import os, sys
+          import os, re, sys
           from packaging.version import InvalidVersion, Version
           sys.path.insert(0, "src")
           from kilden.version import VERSION
 
-          tag = os.environ["GITHUB_REF_NAME"].lstrip("v")
+          ref = os.environ["GITHUB_REF_NAME"]
+
+          # Validate the raw ref before touching it. Stripping first is not
+          # enough to reject a malformed tag: lstrip("v") takes a character
+          # set, so "vv0.1.0" becomes "0.1.0"; and even removeprefix leaves
+          # "v0.1.0", which PEP 440 accepts (the leading v is optional there).
+          # Either way a bad tag would publish. Demand the exact shape instead.
+          if not re.fullmatch(r"v\d+\.\d+\.\d+(?:-[0-9A-Za-z.]+)?", ref):
+              raise SystemExit(f"::error::tag {ref} is not of the form v<major>.<minor>.<patch>[-prerelease]")
+
+          tag = ref[1:]
           try:
               if Version(tag) != Version(VERSION):
                   raise SystemExit(
-                      f"::error::tag {os.environ['GITHUB_REF_NAME']} ships version "
-                      f"{VERSION!r} — bump VERSION in src/kilden/version.py"
+                      f"::error::tag {ref} ships version {VERSION!r} — "
+                      f"bump VERSION in src/kilden/version.py"
                   )
           except InvalidVersion as e:
               raise SystemExit(f"::error::{e}")
-          print(f"version {VERSION!r} matches tag {os.environ['GITHUB_REF_NAME']}")
+          print(f"version {VERSION!r} matches tag {ref}")
           EOF
       - run: python -m build
       - run: twine check dist/*
