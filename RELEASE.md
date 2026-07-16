@@ -10,7 +10,7 @@ Register the trusted publisher on PyPI (works before the first upload, as a
 *pending* publisher): <https://pypi.org/manage/account/publishing/> →
 
 - PyPI project name: `kilden`
-- Owner: `freshworkstudio` · Repository: `kilden-sdk-python`
+- Owner: `kildenhq` · Repository: `kilden-sdk-python`
 - Workflow name: `release.yml` · Environment: (leave empty)
 
 ## Cutting a release
