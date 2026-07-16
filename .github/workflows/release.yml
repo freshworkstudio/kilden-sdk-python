@@ -16,7 +16,32 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install build twine
+      - run: pip install build twine packaging
+      - name: tag matches the declared version
+        # SPEC §4.1 reports this in the User-Agent (`kilden-python/<version>`)
+        # and nothing compared it to the tag: kilden-sdk-php shipped two
+        # releases and kilden-sdk-go one, all declaring a stale version.
+        # Compare through packaging.Version rather than as strings — the tag is
+        # semver and the version is PEP 440 (v0.1.0-alpha.3 ↔ 0.1.0a3), so a
+        # literal comparison would reject every valid prerelease.
+        run: |
+          python - <<'EOF'
+          import os, sys
+          from packaging.version import InvalidVersion, Version
+          sys.path.insert(0, "src")
+          from kilden.version import VERSION
+
+          tag = os.environ["GITHUB_REF_NAME"].lstrip("v")
+          try:
+              if Version(tag) != Version(VERSION):
+                  raise SystemExit(
+                      f"::error::tag {os.environ['GITHUB_REF_NAME']} ships version "
+                      f"{VERSION!r} — bump VERSION in src/kilden/version.py"
+                  )
+          except InvalidVersion as e:
+              raise SystemExit(f"::error::{e}")
+          print(f"version {VERSION!r} matches tag {os.environ['GITHUB_REF_NAME']}")
+          EOF
       - run: python -m build
       - run: twine check dist/*
       - name: publish to PyPI (OIDC trusted publishing)
