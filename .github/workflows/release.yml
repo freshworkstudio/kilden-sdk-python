@@ -16,7 +16,42 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install build twine
+      - run: pip install build twine packaging
+      - name: tag matches the declared version
+        # SPEC §4.1 reports this in the User-Agent (`kilden-python/<version>`)
+        # and nothing compared it to the tag: kilden-sdk-php shipped two
+        # releases and kilden-sdk-go one, all declaring a stale version.
+        # Compare through packaging.Version rather than as strings — the tag is
+        # semver and the version is PEP 440 (v0.1.0-alpha.3 ↔ 0.1.0a3), so a
+        # literal comparison would reject every valid prerelease.
+        run: |
+          python - <<'EOF'
+          import os, re, sys
+          from packaging.version import InvalidVersion, Version
+          sys.path.insert(0, "src")
+          from kilden.version import VERSION
+
+          ref = os.environ["GITHUB_REF_NAME"]
+
+          # Validate the raw ref before touching it. Stripping first is not
+          # enough to reject a malformed tag: lstrip("v") takes a character
+          # set, so "vv0.1.0" becomes "0.1.0"; and even removeprefix leaves
+          # "v0.1.0", which PEP 440 accepts (the leading v is optional there).
+          # Either way a bad tag would publish. Demand the exact shape instead.
+          if not re.fullmatch(r"v\d+\.\d+\.\d+(?:-[0-9A-Za-z.]+)?", ref):
+              raise SystemExit(f"::error::tag {ref} is not of the form v<major>.<minor>.<patch>[-prerelease]")
+
+          tag = ref[1:]
+          try:
+              if Version(tag) != Version(VERSION):
+                  raise SystemExit(
+                      f"::error::tag {ref} ships version {VERSION!r} — "
+                      f"bump VERSION in src/kilden/version.py"
+                  )
+          except InvalidVersion as e:
+              raise SystemExit(f"::error::{e}")
+          print(f"version {VERSION!r} matches tag {ref}")
+          EOF
       - run: python -m build
       - run: twine check dist/*
       - name: publish to PyPI (OIDC trusted publishing)

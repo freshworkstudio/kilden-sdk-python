@@ -2,9 +2,12 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.version]
+path = "src/kilden/version.py"
+
 [project]
 name = "kilden"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Kilden server-side SDK: events, identity signing and feature flags. Zero dependencies, fork-safe."
 readme = "README.md"
 license = "MIT"
