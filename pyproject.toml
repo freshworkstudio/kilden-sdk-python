@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "kilden"
-version = "0.1.0a3"
+version = "0.1.0"
 description = "Kilden server-side SDK: events, identity signing and feature flags. Zero dependencies, fork-safe."
 readme = "README.md"
 license = "MIT"
