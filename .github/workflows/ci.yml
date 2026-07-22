@@ -7,7 +7,7 @@ on:
 
 jobs:
   unit:
-    runs-on: ubuntu-latest
+    runs-on: kilden-runners
     strategy:
       matrix:
         python: ["3.9", "3.10", "3.11", "3.12", "3.13"]
@@ -20,7 +20,7 @@ jobs:
       - run: pytest -m "not integration" -q
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: kilden-runners
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -31,7 +31,7 @@ jobs:
       - run: mypy
 
   integration:
-    runs-on: ubuntu-latest
+    runs-on: kilden-runners
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
@@ -52,7 +52,7 @@ jobs:
           KILDEN_SPEC_DIR: ${{ github.workspace }}/.spec
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: kilden-runners
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

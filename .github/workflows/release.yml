@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   pypi:
-    runs-on: ubuntu-latest
+    runs-on: kilden-runners
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
