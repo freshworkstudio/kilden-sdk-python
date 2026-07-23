@@ -1,3 +1,7 @@
+# Every job runs in an ubuntu container: setup-php/python/ruby only ship
+# prebuilt toolchains for GitHub's ubuntu images and fail outright on the lab
+# runners, which are Debian 13. buildpack-deps carries the git + build tools
+# those actions expect on top of it.
 name: ci
 
 on:
@@ -7,7 +11,8 @@ on:
 
 jobs:
   unit:
-    runs-on: ubuntu-latest
+    runs-on: kilden-runners
+    container: buildpack-deps:jammy
     strategy:
       matrix:
         python: ["3.9", "3.10", "3.11", "3.12", "3.13"]
@@ -20,7 +25,8 @@ jobs:
       - run: pytest -m "not integration" -q
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: kilden-runners
+    container: buildpack-deps:jammy
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -31,7 +37,8 @@ jobs:
       - run: mypy
 
   integration:
-    runs-on: ubuntu-latest
+    runs-on: kilden-runners
+    container: buildpack-deps:jammy
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
@@ -52,7 +59,8 @@ jobs:
           KILDEN_SPEC_DIR: ${{ github.workspace }}/.spec
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: kilden-runners
+    container: buildpack-deps:jammy
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
